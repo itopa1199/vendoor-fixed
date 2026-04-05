@@ -5,6 +5,7 @@ import {
 } from '@/components/admin/ui'
 import { useAdminStore } from '@/store/admin'
 import { ngnKobo } from '@/lib/mock-data'
+import { CheckCircle, Landmark, RefreshCw } from 'lucide-react'
 
 export default function PayoutsPage() {
   const { payouts, vendors, processPayout } = useAdminStore()
@@ -31,9 +32,9 @@ export default function PayoutsPage() {
       </div>
 
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
-        <StatCard icon="✅" value={ngnKobo(totalPaid)}      label="Total Paid Out"     accent="green" />
+        <StatCard icon={<CheckCircle size={18} />} value={ngnKobo(totalPaid)}      label="Total Paid Out"     accent="green" />
         <StatCard icon="⏳" value={String(pending.length)}  label="Pending Payouts"    accent="gold"  />
-        <StatCard icon="🔄" value={String(inProcess.length)} label="Processing"        accent="blue"  />
+        <StatCard icon={<RefreshCw size={18} />} value={String(inProcess.length)} label="Processing"        accent="blue"  />
       </div>
 
       <Card>
@@ -67,14 +68,14 @@ export default function PayoutsPage() {
                   <td><StatusBadge status={p.status} /></td>
                   <td>
                     {p.status === 'pending'
-                      ? <Btn v="green" size="sm" onClick={() => setProcessId(p.id)}>▶ Process</Btn>
+                      ? <Btn v="green" size="sm" onClick={() => setProcessId(p.id)}>Process</Btn>
                       : <span className="text-[#A8A79F] text-[11px]">—</span>
                     }
                   </td>
                 </tr>
               ))}
               {payouts.length === 0 && (
-                <tr><td colSpan={8} className="py-10"><Empty icon="🏦" title="No payouts yet" /></td></tr>
+                <tr><td colSpan={8} className="py-10"><Empty icon={<Landmark size={18} />} title="No payouts yet" /></td></tr>
               )}
             </tbody>
           </table>
@@ -91,7 +92,7 @@ export default function PayoutsPage() {
           <Btn v="green" size="lg" onClick={() => {
             processPayout(processing!.id); setProcessId(null)
             toast(`✅ Payout of ${ngnKobo(processing!.net)} sent to ${processing!.vendor_name}!`)
-          }}>▶ Send {processing && ngnKobo(processing.net)}</Btn>
+          }}>Send {processing && ngnKobo(processing.net)}</Btn>
         </>}
       >
         {processing && <>

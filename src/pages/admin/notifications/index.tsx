@@ -1,17 +1,18 @@
 import React, { useState } from 'react'
 import { Card, Btn, Badge, useToast } from '@/components/admin/ui'
+import { Store, Package, CreditCard, Lock, Settings, DollarSign } from 'lucide-react'
 import { useAdminStore } from '@/store/admin'
 import { clsx } from 'clsx'
 
 const NOTIFICATIONS = [
-  { id:'n1', type:'vendor',   icon:'🏪', msg:'New vendor application: FreshBakes NG requires review.',     time:'3 hours ago', read:false },
-  { id:'n2', type:'order',    icon:'📦', msg:'Order VND-G4W2X6 has been cancelled by customer.',           time:'4 hours ago', read:false },
-  { id:'n3', type:'payment',  icon:'💳', msg:'Refund processed for VND-H8Y5Z7 — ₦120,000.',               time:'6 hours ago', read:false },
-  { id:'n4', type:'security', icon:'🔐', msg:'Flagged product "Suspicious Item XYZ" needs review.',        time:'1 day ago',   read:false },
-  { id:'n5', type:'vendor',   icon:'🏪', msg:'New vendor application: TechZone Abuja requires review.',    time:'2 days ago',  read:true  },
-  { id:'n6', type:'system',   icon:'⚙️', msg:'System backup completed successfully.',                       time:'3 days ago',  read:true  },
-  { id:'n7', type:'order',    icon:'📦', msg:'Order VND-A9F2K3 delivered successfully to Adaeze M.',       time:'3 days ago',  read:true  },
-  { id:'n8', type:'payment',  icon:'💰', msg:'Spotlight payment received from SportCity NG.',              time:'4 days ago',  read:true  },
+  { id:'n1', type:'vendor',   icon:'store', msg:'New vendor application: FreshBakes NG requires review.',     time:'3 hours ago', read:false },
+  { id:'n2', type:'order',    icon:'package', msg:'Order VND-G4W2X6 has been cancelled by customer.',           time:'4 hours ago', read:false },
+  { id:'n3', type:'payment',  icon:'card', msg:'Refund processed for VND-H8Y5Z7 — ₦120,000.',               time:'6 hours ago', read:false },
+  { id:'n4', type:'security', icon:'lock', msg:'Flagged product "Suspicious Item XYZ" needs review.',        time:'1 day ago',   read:false },
+  { id:'n5', type:'vendor',   icon:'store', msg:'New vendor application: TechZone Abuja requires review.',    time:'2 days ago',  read:true  },
+  { id:'n6', type:'system',   icon:'settings', msg:'System backup completed successfully.',                       time:'3 days ago',  read:true  },
+  { id:'n7', type:'order',    icon:'package', msg:'Order VND-A9F2K3 delivered successfully to Adaeze M.',       time:'3 days ago',  read:true  },
+  { id:'n8', type:'payment',  icon:'dollar', msg:'Spotlight payment received from SportCity NG.',              time:'4 days ago',  read:true  },
 ]
 
 const TYPE_BG: Record<string, string> = {
@@ -102,10 +103,15 @@ export default function NotificationsPage() {
               )}
             >
               <div
-                className="w-8 h-8 rounded-[8px] flex items-center justify-center text-[14px] flex-shrink-0"
+                className="w-8 h-8 rounded-[8px] flex items-center justify-center flex-shrink-0"
                 style={{ background: TYPE_BG[n.type] || '#ECEAE4' }}
               >
-                {n.icon}
+                {n.icon === 'store'    && <Store size={15} className="text-[#0A6E3F]" />}
+                {n.icon === 'package'  && <Package size={15} className="text-[#2563EB]" />}
+                {n.icon === 'card'     && <CreditCard size={15} className="text-[#2563EB]" />}
+                {n.icon === 'lock'     && <Lock size={15} className="text-[#DC2626]" />}
+                {n.icon === 'settings' && <Settings size={15} className="text-[#6B6A62]" />}
+                {n.icon === 'dollar'   && <DollarSign size={15} className="text-[#0A6E3F]" />}
               </div>
               <div className="flex-1 min-w-0">
                 <p className={clsx('text-[12px] leading-[1.5]', !n.read && 'font-semibold')}>

@@ -5,6 +5,7 @@ import {
 } from '@/components/admin/ui'
 import { useAdminStore } from '@/store/admin'
 import { ngnKobo } from '@/lib/mock-data'
+import { CheckCircle, Package, Settings, ShoppingCart, Truck, XCircle } from 'lucide-react'
 
 export default function OrdersPage() {
   const { orders, advanceOrder, cancelOrder } = useAdminStore()
@@ -34,16 +35,16 @@ export default function OrdersPage() {
           <h1 className="text-[18px] font-black">Orders</h1>
           <p className="text-[11px] text-[#6B6A62] mt-0.5">{orders.length} total orders.</p>
         </div>
-        <Btn v="outline" size="sm">⬇️ Export</Btn>
+        <Btn v="outline" size="sm">Export</Btn>
       </div>
 
       {/* Status stats */}
       <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3">
-        <StatCard icon="✅" value={String(counts.confirmed ?? 0)}          label="Confirmed"       accent="blue"   />
-        <StatCard icon="⚙️" value={String(counts.preparing ?? 0)}          label="Preparing"       accent="gold"   />
-        <StatCard icon="🚚" value={String(counts.out_for_delivery ?? 0)}   label="Out for Delivery" accent="blue"   />
-        <StatCard icon="📦" value={String(counts.delivered ?? 0)}          label="Delivered"       accent="green"  />
-        <StatCard icon="❌" value={String((counts.cancelled ?? 0) + (counts.refunded ?? 0))} label="Cancelled/Refunded" accent="red" />
+        <StatCard icon={<CheckCircle size={18} />} value={String(counts.confirmed ?? 0)}          label="Confirmed"       accent="blue"   />
+        <StatCard icon={<Settings size={18} />} value={String(counts.preparing ?? 0)}          label="Preparing"       accent="gold"   />
+        <StatCard icon={<Truck size={18} />} value={String(counts.out_for_delivery ?? 0)}   label="Out for Delivery" accent="blue"   />
+        <StatCard icon={<Package size={18} />} value={String(counts.delivered ?? 0)}          label="Delivered"       accent="green"  />
+        <StatCard icon={<XCircle size={18} />} value={String((counts.cancelled ?? 0) + (counts.refunded ?? 0))} label="Cancelled/Refunded" accent="red" />
       </div>
 
       <div className="flex gap-2 flex-wrap">
@@ -94,7 +95,7 @@ export default function OrdersPage() {
                 </tr>
               ))}
               {filtered.length === 0 && (
-                <tr><td colSpan={8} className="py-10"><Empty icon="🛒" title="No orders found" /></td></tr>
+                <tr><td colSpan={8} className="py-10"><Empty icon={<ShoppingCart size={18} />} title="No orders found" /></td></tr>
               )}
             </tbody>
           </table>

@@ -7,6 +7,7 @@ import {
 import { Card, CardHeader, CardTitle, StatCard, Btn, ProgBar } from '@/components/admin/ui'
 import { useAdminStore } from '@/store/admin'
 import { STATS, REVENUE_CHART, CATEGORY_CHART, ngnKobo, pctChange } from '@/lib/mock-data'
+import { BarChart2, DollarSign, RefreshCw, Star } from 'lucide-react'
 
 export default function AnalyticsPage() {
   const { vendors } = useAdminStore()
@@ -49,10 +50,10 @@ export default function AnalyticsPage() {
 
       {/* KPI Cards */}
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-3">
-        <StatCard icon="💰" value={ngnKobo(STATS.platformCut)}     label="Platform Revenue (5%)" accent="green"  delta={pctChange(STATS.platformCut, STATS.prevRevenue * 0.05)} />
-        <StatCard icon="⭐" value={ngnKobo(STATS.spotRevenue)}      label="Spotlight Revenue"     accent="gold"   />
-        <StatCard icon="📊" value={ngnKobo(STATS.revenue / STATS.orders)} label="Avg Order Value" accent="blue"   />
-        <StatCard icon="🔄" value="2.8%"                             label="Cancellation Rate"     accent="red"    />
+        <StatCard icon={<DollarSign size={18} />} value={ngnKobo(STATS.platformCut)}     label="Platform Revenue (5%)" accent="green"  delta={pctChange(STATS.platformCut, STATS.prevRevenue * 0.05)} />
+        <StatCard icon={<Star size={18} />} value={ngnKobo(STATS.spotRevenue)}      label="Spotlight Revenue"     accent="gold"   />
+        <StatCard icon={<BarChart2 size={18} />} value={ngnKobo(STATS.revenue / STATS.orders)} label="Avg Order Value" accent="blue"   />
+        <StatCard icon={<RefreshCw size={18} />} value="2.8%"                             label="Cancellation Rate"     accent="red"    />
       </div>
 
       {/* Main chart — Revenue & Orders */}

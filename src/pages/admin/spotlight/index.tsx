@@ -5,6 +5,7 @@ import {
 } from '@/components/admin/ui'
 import { useAdminStore } from '@/store/admin'
 import { ngnKobo } from '@/lib/mock-data'
+import { Calendar, DollarSign, Star } from 'lucide-react'
 
 export default function SpotlightPage() {
   const { spotlightSubs, vendors, removeSpotlight } = useAdminStore()
@@ -27,9 +28,9 @@ export default function SpotlightPage() {
       </div>
 
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
-        <StatCard icon="⭐" value={String(active.length)}       label="Active Spotlights"       accent="gold"  />
-        <StatCard icon="💰" value={ngnKobo(active.length * 100_000)} label="Monthly Revenue"   accent="green" />
-        <StatCard icon="📅" value={String(expired.length)}      label="Expired"                 accent="purple"/>
+        <StatCard icon={<Star size={18} />} value={String(active.length)}       label="Active Spotlights"       accent="gold"  />
+        <StatCard icon={<DollarSign size={18} />} value={ngnKobo(active.length * 100_000)} label="Monthly Revenue"   accent="green" />
+        <StatCard icon={<Calendar size={18} />} value={String(expired.length)}      label="Expired"                 accent="purple"/>
       </div>
 
       <Card>
@@ -67,7 +68,7 @@ export default function SpotlightPage() {
                 </tr>
               ))}
               {spotlightSubs.length === 0 && (
-                <tr><td colSpan={7} className="py-10"><Empty icon="⭐" title="No spotlight subscriptions" /></td></tr>
+                <tr><td colSpan={7} className="py-10"><Empty icon={<Star size={18} />} title="No spotlight subscriptions" /></td></tr>
               )}
             </tbody>
           </table>

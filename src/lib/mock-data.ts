@@ -108,13 +108,13 @@ export const SPOTLIGHT_SUBS: SpotlightSub[] = [
 ]
 
 export const RECENT_ACTIVITY = [
-  { icon:'✅', color:'#E8F5EE', msg:'Vendor <b>TechDeals NG</b> approved and activated.',        time:'5 min ago'  },
-  { icon:'🛒', color:'#EFF6FF', msg:'New order <b>VND-A9F2K3</b> placed — ₦1,050,000.',         time:'18 min ago' },
-  { icon:'👤', color:'#F5F3FF', msg:'New user <b>Chidi Aneke</b> registered.',                   time:'32 min ago' },
-  { icon:'💳', color:'#EFF6FF', msg:'Spotlight payment from <b>Beauty by Amaka</b>.',            time:'1 hr ago'   },
-  { icon:'⚠️', color:'#FFF7ED', msg:'Vendor <b>GadgetHub Lagos</b> suspended — policy violation.',time:'2 hrs ago' },
-  { icon:'🏪', color:'#FEF2F2', msg:'New vendor application: <b>FreshBakes NG</b>.',             time:'3 hrs ago'  },
-  { icon:'🗑️', color:'#FEF2F2', msg:'Product flagged and hidden: <b>Suspicious Item XYZ</b>.',  time:'4 hrs ago'  },
+  { icon:'check', color:'#E8F5EE', msg:'Vendor <b>TechDeals NG</b> approved and activated.',        time:'5 min ago'  },
+  { icon:'cart', color:'#EFF6FF', msg:'New order <b>VND-A9F2K3</b> placed — ₦1,050,000.',         time:'18 min ago' },
+  { icon:'user', color:'#F5F3FF', msg:'New user <b>Chidi Aneke</b> registered.',                   time:'32 min ago' },
+  { icon:'card', color:'#EFF6FF', msg:'Spotlight payment from <b>Beauty by Amaka</b>.',            time:'1 hr ago'   },
+  { icon:'warn', color:'#FFF7ED', msg:'Vendor <b>GadgetHub Lagos</b> suspended — policy violation.',time:'2 hrs ago' },
+  { icon:'store', color:'#FEF2F2', msg:'New vendor application: <b>FreshBakes NG</b>.',             time:'3 hrs ago'  },
+  { icon:'trash', color:'#FEF2F2', msg:'Product flagged and hidden: <b>Suspicious Item XYZ</b>.',  time:'4 hrs ago'  },
 ]
 
 // ─── Helpers ──────────────────────────────────────────────────────────────────

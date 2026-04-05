@@ -1,6 +1,7 @@
 import React, { useState } from 'react'
 import { Card, StatCard, Btn, StatusBadge, Badge, Tabs, Empty } from '@/components/admin/ui'
 import { TRANSACTIONS, ngnKobo } from '@/lib/mock-data'
+import { BarChart2, DollarSign, Landmark, Star } from 'lucide-react'
 
 export default function TransactionsPage() {
   const [tab, setTab] = useState('all')
@@ -26,14 +27,14 @@ export default function TransactionsPage() {
           <h1 className="text-[18px] font-black">Transactions</h1>
           <p className="text-[11px] text-[#6B6A62] mt-0.5">All Paystack transactions processed on Vendoor.</p>
         </div>
-        <Btn v="outline" size="sm">⬇️ Export CSV</Btn>
+        <Btn v="outline" size="sm">Export CSV</Btn>
       </div>
 
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-3">
-        <StatCard icon="💰" value={ngnKobo(totalVol)}  label="Total Volume"         accent="green"  />
-        <StatCard icon="🏦" value={ngnKobo(totalCuts)} label="Platform Revenue (5%)" accent="blue"   />
-        <StatCard icon="⭐" value={ngnKobo(spotRev)}   label="Spotlight Revenue"     accent="gold"   />
-        <StatCard icon="📊" value={String(all.length)} label="Total Transactions"    accent="purple" />
+        <StatCard icon={<DollarSign size={18} />} value={ngnKobo(totalVol)}  label="Total Volume"         accent="green"  />
+        <StatCard icon={<Landmark size={18} />} value={ngnKobo(totalCuts)} label="Platform Revenue (5%)" accent="blue"   />
+        <StatCard icon={<Star size={18} />} value={ngnKobo(spotRev)}   label="Spotlight Revenue"     accent="gold"   />
+        <StatCard icon={<BarChart2 size={18} />} value={String(all.length)} label="Total Transactions"    accent="purple" />
       </div>
 
       <Card>

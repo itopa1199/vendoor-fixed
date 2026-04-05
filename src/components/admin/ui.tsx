@@ -93,7 +93,7 @@ export function CardTitle({ children }: { children: React.ReactNode }) {
 
 // ─── Stat Card ────────────────────────────────────────────────────────────────
 interface StatCardProps {
-  icon:    string
+  icon:    React.ReactNode
   value:   string
   label:   string
   delta?:  number

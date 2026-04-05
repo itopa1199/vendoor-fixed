@@ -1,5 +1,6 @@
 import { Link } from 'react-router-dom'
 import { useAdminStore } from '@/store/admin'
+import { Bell, Settings, Search } from 'lucide-react'
 
 interface TopbarProps {
   title:        string
@@ -24,7 +25,7 @@ export default function Topbar({ title, onMenuClick }: TopbarProps) {
       <div className="flex items-center gap-2">
         {/* Search */}
         <div className="hidden sm:flex items-center gap-2 bg-[#ECEAE4] border border-[#E2E0DA] rounded-[8px] px-3 py-1.5 w-44">
-          <span className="text-[#A8A79F] text-[12px]">🔍</span>
+          <Search size={14} className="text-[#A8A79F]" />
           <input
             className="flex-1 border-none outline-none bg-transparent text-[12px] min-w-0"
             placeholder="Quick search…"

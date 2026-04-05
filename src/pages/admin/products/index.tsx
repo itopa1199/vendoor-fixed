@@ -5,6 +5,7 @@ import {
 } from '@/components/admin/ui'
 import { useAdminStore } from '@/store/admin'
 import { ngnKobo } from '@/lib/mock-data'
+import { Package } from 'lucide-react'
 
 export default function ProductsPage() {
   const { products, flagProduct, unflagProduct, removeProduct, toggleFeatured } = useAdminStore()
@@ -37,7 +38,7 @@ export default function ProductsPage() {
             {products.length} total · {flaggedCount > 0 && <span className="text-[#DC2626]">{flaggedCount} flagged</span>}
           </p>
         </div>
-        <Btn v="outline" size="sm">⬇️ Export</Btn>
+        <Btn v="outline" size="sm">Export</Btn>
       </div>
 
       <div className="flex gap-2 flex-wrap">
@@ -94,7 +95,7 @@ export default function ProductsPage() {
               ))}
               {filtered.length === 0 && (
                 <tr><td colSpan={9} className="py-10">
-                  <Empty icon="📦" title="No products found" />
+                  <Empty icon={<Package size={18} />} title="No products found" />
                 </td></tr>
               )}
             </tbody>

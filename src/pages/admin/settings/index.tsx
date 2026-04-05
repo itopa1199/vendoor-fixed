@@ -1,5 +1,6 @@
 import React, { useState } from 'react'
 import { Card, CardHeader, CardTitle, Btn, Toggle, Badge, DR, Field, Input, SelectField, useToast } from '@/components/admin/ui'
+import { Save, ShieldOff } from 'lucide-react'
 
 const INITIAL = {
   platformFee:        5,
@@ -53,14 +54,14 @@ export default function SettingsPage() {
           <h1 className="text-[18px] font-black">Platform Settings</h1>
           <p className="text-[11px] text-[#6B6A62] mt-0.5">Configure Vendoor platform settings.</p>
         </div>
-        <Btn v="green" size="md" onClick={save}>💾 Save Changes</Btn>
+        <Btn v="green" size="md" onClick={save}>Save Changes</Btn>
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
 
         {/* Financial */}
         <Card>
-          <CardHeader><CardTitle>💰 Financial Settings</CardTitle></CardHeader>
+          <CardHeader><CardTitle>Financial Settings</CardTitle></CardHeader>
           <div className="p-4 space-y-1">
             <Field label="Platform Commission (%)">
               <Input type="number" value={s.platformFee} min={1} max={30} step={0.5}
@@ -88,7 +89,7 @@ export default function SettingsPage() {
 
         {/* Platform toggles */}
         <Card>
-          <CardHeader><CardTitle>🔧 Platform Options</CardTitle></CardHeader>
+          <CardHeader><CardTitle>Platform Options</CardTitle></CardHeader>
           <div className="p-4">
             {TOGGLE_ROWS.map(row => (
               <div key={row.key} className="flex items-center justify-between py-3 border-b border-[#E2E0DA] last:border-0">
@@ -104,7 +105,7 @@ export default function SettingsPage() {
 
         {/* Security */}
         <Card>
-          <CardHeader><CardTitle>🔐 Security</CardTitle></CardHeader>
+          <CardHeader><CardTitle>Security</CardTitle></CardHeader>
           <div className="p-4 space-y-1">
             <Field label="Allowed Origins (CORS)">
               <Input value={s.corsOrigins} onChange={e => setS(p => ({ ...p, corsOrigins: e.target.value }))} />
@@ -118,7 +119,7 @@ export default function SettingsPage() {
                 options={['15 minutes','30 minutes','1 hour']} />
             </Field>
             <div className="pt-2">
-              <Btn v="red" size="md" onClick={() => toast('🔐 All active sessions revoked.')}>
+              <Btn v="red" size="md" onClick={() => toast('All active sessions revoked.')}>
                 Revoke All Sessions
               </Btn>
             </div>
@@ -127,7 +128,7 @@ export default function SettingsPage() {
 
         {/* System Status */}
         <Card>
-          <CardHeader><CardTitle>📊 System Status</CardTitle></CardHeader>
+          <CardHeader><CardTitle>System Status</CardTitle></CardHeader>
           <div className="p-4">
             {STATUS_ROWS.map(row => (
               <DR key={row.label} label={row.label} value={<Badge v={row.v}>{row.value}</Badge>} />

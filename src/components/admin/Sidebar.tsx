@@ -2,45 +2,48 @@ import { Link } from 'react-router-dom'
 import { useLocation } from 'react-router-dom'
 import { clsx } from 'clsx'
 import { useAdminStore } from '@/store/admin'
+import {
+  LayoutDashboard, TrendingUp, Clock, Store, Package,
+  Users, ShoppingCart, CreditCard, Landmark, Star,
+  Bell, Settings, LogOut,
+} from 'lucide-react'
 
 const NAV = [
   {
     section: 'Main',
     items: [
-      { id: 'dashboard',  label: 'Dashboard',        icon: '📊', href: '/admin'              },
-      { id: 'analytics',  label: 'Analytics',         icon: '📈', href: '/admin/analytics'    },
+      { id: 'dashboard', label: 'Dashboard',       Icon: LayoutDashboard, href: '/admin'             },
+      { id: 'analytics', label: 'Analytics',        Icon: TrendingUp,      href: '/admin/analytics'   },
     ],
   },
   {
     section: 'Marketplace',
     items: [
-      { id: 'pending',   label: 'Pending Approvals', icon: '⏳', href: '/admin/pending',      badge: 'pending'  },
-      { id: 'vendors',   label: 'Vendors',            icon: '🏪', href: '/admin/vendors'       },
-      { id: 'products',  label: 'Products',           icon: '📦', href: '/admin/products',     badge: 'flagged'  },
-      { id: 'users',     label: 'Users',              icon: '👥', href: '/admin/users'         },
-      { id: 'orders',    label: 'Orders',             icon: '🛒', href: '/admin/orders'        },
+      { id: 'pending',  label: 'Pending Approvals', Icon: Clock,          href: '/admin/pending',      badge: 'pending' },
+      { id: 'vendors',  label: 'Vendors',            Icon: Store,          href: '/admin/vendors'       },
+      { id: 'products', label: 'Products',           Icon: Package,        href: '/admin/products',     badge: 'flagged' },
+      { id: 'users',    label: 'Users',              Icon: Users,          href: '/admin/users'         },
+      { id: 'orders',   label: 'Orders',             Icon: ShoppingCart,   href: '/admin/orders'        },
     ],
   },
   {
     section: 'Finance',
     items: [
-      { id: 'transactions', label: 'Transactions', icon: '💳', href: '/admin/transactions' },
-      { id: 'payouts',      label: 'Payouts',      icon: '🏦', href: '/admin/payouts'      },
-      { id: 'spotlight',    label: 'Spotlight',    icon: '⭐', href: '/admin/spotlight'    },
+      { id: 'transactions', label: 'Transactions', Icon: CreditCard, href: '/admin/transactions' },
+      { id: 'payouts',      label: 'Payouts',      Icon: Landmark,   href: '/admin/payouts'      },
+      { id: 'spotlight',    label: 'Spotlight',    Icon: Star,       href: '/admin/spotlight'    },
     ],
   },
   {
     section: 'System',
     items: [
-      { id: 'notifications', label: 'Notifications', icon: '🔔', href: '/admin/notifications', badge: 'notifs' },
-      { id: 'settings',      label: 'Settings',       icon: '⚙️', href: '/admin/settings'       },
+      { id: 'notifications', label: 'Notifications', Icon: Bell,     href: '/admin/notifications', badge: 'notifs' },
+      { id: 'settings',      label: 'Settings',       Icon: Settings, href: '/admin/settings'       },
     ],
   },
 ]
 
-interface SidebarProps {
-  onClose?: () => void
-}
+interface SidebarProps { onClose?: () => void }
 
 export default function Sidebar({ onClose }: SidebarProps) {
   const { pathname } = useLocation()
@@ -75,8 +78,8 @@ export default function Sidebar({ onClose }: SidebarProps) {
               {section.section}
             </div>
             {section.items.map(item => {
-              const active  = pathname === item.href || (item.href !== '/admin' && pathname.startsWith(item.href))
-              const badge   = getBadge((item as any).badge)
+              const active = pathname === item.href || (item.href !== '/admin' && pathname.startsWith(item.href))
+              const badge  = getBadge((item as any).badge)
               return (
                 <Link
                   key={item.id}
@@ -89,8 +92,8 @@ export default function Sidebar({ onClose }: SidebarProps) {
                       : 'text-[#6B6A62] hover:bg-[#ECEAE4] hover:text-[#1A1A18]'
                   )}
                 >
-                  <span className="flex items-center gap-2">
-                    <span className="text-[14px] w-4 text-center">{item.icon}</span>
+                  <span className="flex items-center gap-2.5">
+                    <item.Icon size={15} strokeWidth={2} />
                     {item.label}
                   </span>
                   {badge > 0 && (
@@ -115,8 +118,8 @@ export default function Sidebar({ onClose }: SidebarProps) {
             <div className="text-[12px] font-semibold truncate">Super Admin</div>
             <div className="text-[10px] text-[#6B6A62] truncate">admin@vendoor.ng</div>
           </div>
-          <Link to="/admin/login" className="text-[10px] text-[#6B6A62] hover:text-[#DC2626] px-1.5 py-0.5 rounded hover:bg-[#FEF2F2] transition-colors">
-            Out
+          <Link to="/admin/login" className="text-[#6B6A62] hover:text-[#DC2626] transition-colors">
+            <LogOut size={14} />
           </Link>
         </div>
       </div>

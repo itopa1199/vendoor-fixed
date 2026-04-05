@@ -56,7 +56,7 @@ export default function VendorsPage() {
           <span className="text-[13px] font-bold">
             All Vendors <span className="text-[11px] text-[#6B6A62] font-normal">{vendors.filter(v=>v.status==='active').length} active</span>
           </span>
-          <Btn v="outline" size="sm">⬇️ Export</Btn>
+          <Btn v="outline" size="sm">Export</Btn>
         </div>
         <div className="overflow-x-auto">
           <table>

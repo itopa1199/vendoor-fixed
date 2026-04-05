@@ -1,12 +1,26 @@
 import React from 'react'
 import { Link } from 'react-router-dom'
 import {
-  AreaChart, Area, BarChart, Bar, PieChart, Pie, Cell,
+  AreaChart, Area, PieChart, Pie, Cell,
   XAxis, YAxis, Tooltip, ResponsiveContainer, Legend,
 } from 'recharts'
+import {
+  DollarSign, ShoppingCart, Users, Store,
+  TrendingUp, BarChart2, CheckCircle,
+} from 'lucide-react'
 import { StatCard, Card, CardHeader, CardTitle, Btn, StatusBadge, Avatar, ProgBar } from '@/components/admin/ui'
 import { useAdminStore } from '@/store/admin'
 import { STATS, REVENUE_CHART, CATEGORY_CHART, RECENT_ACTIVITY, ngnKobo, pctChange } from '@/lib/mock-data'
+
+const ACTIVITY_ICONS: Record<string, React.ReactNode> = {
+  '✅': <CheckCircle size={14} className="text-[#0A6E3F]" />,
+  '🛒': <ShoppingCart size={14} className="text-[#2563EB]" />,
+  '👤': <Users size={14} className="text-[#7C3AED]" />,
+  '💳': <DollarSign size={14} className="text-[#2563EB]" />,
+  '⚠️': <Store size={14} className="text-[#EA580C]" />,
+  '🏪': <Store size={14} className="text-[#DC2626]" />,
+  '🗑️': <BarChart2 size={14} className="text-[#DC2626]" />,
+}
 
 export default function DashboardPage() {
   const { pendingVendors, vendors, orders } = useAdminStore()
@@ -21,25 +35,21 @@ export default function DashboardPage() {
           <p className="text-[11px] text-[#6B6A62] mt-0.5">Welcome back, Super Admin. Here's what's happening today.</p>
         </div>
         <div className="flex gap-2">
-          <Link to="/admin/analytics">
-            <Btn v="outline">📈 Analytics</Btn>
-          </Link>
-          <Btn v="green">⬇️ Export Report</Btn>
+          <Link to="/admin/analytics"><Btn v="outline"><TrendingUp size={13} /> Analytics</Btn></Link>
+          <Btn v="green"><BarChart2 size={13} /> Export Report</Btn>
         </div>
       </div>
 
       {/* Stat Cards */}
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-3">
-        <StatCard icon="💰" value={ngnKobo(STATS.revenue)} label="Total Revenue"       accent="green"  delta={pctChange(STATS.revenue, STATS.prevRevenue)} />
-        <StatCard icon="🛒" value={STATS.orders.toLocaleString()} label="Total Orders"  accent="blue"   delta={pctChange(STATS.orders, STATS.prevOrders)} />
-        <StatCard icon="👥" value={STATS.users.toLocaleString()}  label="Registered Users" accent="gold" delta={pctChange(STATS.users, STATS.prevUsers)} />
-        <StatCard icon="🏪" value={String(STATS.vendors)}        label="Active Vendors" accent="red"    delta={pctChange(STATS.vendors, 54)} />
+        <StatCard icon={<DollarSign size={18} className="text-[#0A6E3F]" />} value={ngnKobo(STATS.revenue)} label="Total Revenue"    accent="green"  delta={pctChange(STATS.revenue, STATS.prevRevenue)} />
+        <StatCard icon={<ShoppingCart size={18} className="text-[#2563EB]" />} value={STATS.orders.toLocaleString()} label="Total Orders" accent="blue" delta={pctChange(STATS.orders, STATS.prevOrders)} />
+        <StatCard icon={<Users size={18} className="text-[#D97706]" />} value={STATS.users.toLocaleString()} label="Registered Users" accent="gold" delta={pctChange(STATS.users, STATS.prevUsers)} />
+        <StatCard icon={<Store size={18} className="text-[#DC2626]" />} value={String(STATS.vendors)} label="Active Vendors" accent="red" delta={pctChange(STATS.vendors, 54)} />
       </div>
 
       {/* Charts row */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
-
-        {/* Revenue chart — 2/3 width */}
         <Card className="lg:col-span-2">
           <CardHeader>
             <CardTitle>Revenue Overview <span className="text-[11px] text-[#6B6A62] font-normal ml-1">Last 12 months</span></CardTitle>
@@ -55,17 +65,13 @@ export default function DashboardPage() {
                 </defs>
                 <XAxis dataKey="month" tick={{ fontSize: 10, fill: '#A8A79F' }} tickLine={false} axisLine={false} />
                 <YAxis tick={{ fontSize: 10, fill: '#A8A79F' }} tickLine={false} axisLine={false} tickFormatter={v => `₦${(v/100000).toFixed(0)}K`} width={52} />
-                <Tooltip
-                  formatter={(v: number) => [`₦${Math.round(v).toLocaleString()}`, 'Revenue']}
-                  contentStyle={{ fontSize: 11, borderRadius: 8, border: '1px solid #E2E0DA' }}
-                />
+                <Tooltip formatter={(v: number) => [`₦${Math.round(v).toLocaleString()}`, 'Revenue']} contentStyle={{ fontSize: 11, borderRadius: 8, border: '1px solid #E2E0DA' }} />
                 <Area type="monotone" dataKey="revenue" stroke="#0A6E3F" strokeWidth={2} fill="url(#revGrad)" dot={false} />
               </AreaChart>
             </ResponsiveContainer>
           </div>
         </Card>
 
-        {/* Category pie — 1/3 width */}
         <Card>
           <CardHeader><CardTitle>Sales by Category</CardTitle></CardHeader>
           <div className="p-4 h-[200px]">
@@ -73,9 +79,7 @@ export default function DashboardPage() {
               <PieChart>
                 <Pie data={CATEGORY_CHART.labels.map((l, i) => ({ name: l, value: CATEGORY_CHART.data[i] }))}
                   cx="50%" cy="50%" innerRadius={50} outerRadius={80} paddingAngle={2} dataKey="value">
-                  {CATEGORY_CHART.labels.map((_, i) => (
-                    <Cell key={i} fill={CATEGORY_CHART.colors[i]} />
-                  ))}
+                  {CATEGORY_CHART.labels.map((_, i) => <Cell key={i} fill={CATEGORY_CHART.colors[i]} />)}
                 </Pie>
                 <Tooltip formatter={(v: number) => [`${v}%`, 'Share']} contentStyle={{ fontSize: 11, borderRadius: 8 }} />
                 <Legend iconSize={8} iconType="square" wrapperStyle={{ fontSize: 10 }} />
@@ -87,14 +91,9 @@ export default function DashboardPage() {
 
       {/* Pending + Activity */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
-
-        {/* Pending approvals */}
         <Card>
           <CardHeader>
-            <CardTitle>
-              Pending Approvals{' '}
-              <span className="text-[11px] text-[#DC2626] font-normal">{pendingVendors.length} vendors</span>
-            </CardTitle>
+            <CardTitle>Pending Approvals <span className="text-[11px] text-[#DC2626] font-normal">{pendingVendors.length} vendors</span></CardTitle>
             <Link to="/admin/pending"><Btn v="gold" size="sm">View All</Btn></Link>
           </CardHeader>
           <div>
@@ -105,25 +104,20 @@ export default function DashboardPage() {
                   <div className="text-[12px] font-semibold truncate">{v.biz}</div>
                   <div className="text-[10px] text-[#6B6A62]">{v.cat} · {v.sub}</div>
                 </div>
-                <Link to="/admin/pending">
-                  <Btn v="green" size="sm">Approve</Btn>
-                </Link>
+                <Link to="/admin/pending"><Btn v="green" size="sm">Approve</Btn></Link>
               </div>
             ))}
-            {pendingVendors.length === 0 && (
-              <div className="text-center py-8 text-[12px] text-[#6B6A62]">No pending applications</div>
-            )}
+            {pendingVendors.length === 0 && <div className="text-center py-8 text-[12px] text-[#6B6A62]">No pending applications</div>}
           </div>
         </Card>
 
-        {/* Recent Activity */}
         <Card>
           <CardHeader><CardTitle>Recent Activity</CardTitle></CardHeader>
           <div className="px-4 py-2 max-h-[240px] overflow-y-auto">
             {RECENT_ACTIVITY.map((a, i) => (
               <div key={i} className="flex items-start gap-2.5 py-2.5 border-b border-[#E2E0DA] last:border-0">
-                <div className="w-7 h-7 rounded-[8px] flex items-center justify-center text-[13px] flex-shrink-0" style={{ background: a.color }}>
-                  {a.icon}
+                <div className="w-7 h-7 rounded-[8px] flex items-center justify-center flex-shrink-0" style={{ background: a.color }}>
+                  {ACTIVITY_ICONS[a.icon] ?? a.icon}
                 </div>
                 <div className="flex-1 min-w-0">
                   <div className="text-[12px] leading-[1.4]" dangerouslySetInnerHTML={{ __html: a.msg }} />
@@ -163,10 +157,7 @@ export default function DashboardPage() {
         <div className="overflow-x-auto">
           <table>
             <thead>
-              <tr>
-                <th>Order ID</th><th>Vendor</th><th>Customer</th>
-                <th>Amount</th><th>Date</th><th>Status</th>
-              </tr>
+              <tr><th>Order ID</th><th>Vendor</th><th>Customer</th><th>Amount</th><th>Date</th><th>Status</th></tr>
             </thead>
             <tbody>
               {orders.slice(0, 6).map(o => (
@@ -175,9 +166,7 @@ export default function DashboardPage() {
                   <td className="font-semibold">{o.vendor_name}</td>
                   <td>{o.user_name}</td>
                   <td className="font-bold text-[#0A6E3F]">{ngnKobo(o.total)}</td>
-                  <td className="text-[11px] text-[#6B6A62]">
-                    {new Date(o.created_at).toLocaleDateString('en-NG', { day:'numeric', month:'short' })}
-                  </td>
+                  <td className="text-[11px] text-[#6B6A62]">{new Date(o.created_at).toLocaleDateString('en-NG', { day:'numeric', month:'short' })}</td>
                   <td><StatusBadge status={o.status} /></td>
                 </tr>
               ))}

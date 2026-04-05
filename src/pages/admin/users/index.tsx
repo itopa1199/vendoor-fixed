@@ -4,6 +4,7 @@ import {
   Modal, DR, Badge, Avatar, useToast, Empty,
 } from '@/components/admin/ui'
 import { ngnKobo } from '@/lib/mock-data'
+import { Users } from 'lucide-react'
 
 const USERS = [
   { id:'u1', name:'Adaeze Mensah',  email:'ada@gmail.com',     phone:'08012345678', role:'buyer',  orders:7,  joined:'Jan 2024', status:'active',  spend:1_048_500 },
@@ -49,7 +50,7 @@ export default function UsersPage() {
           <h1 className="text-[18px] font-black">Users</h1>
           <p className="text-[11px] text-[#6B6A62] mt-0.5">{users.length} registered users.</p>
         </div>
-        <Btn v="outline" size="sm">⬇️ Export</Btn>
+        <Btn v="outline" size="sm">Export</Btn>
       </div>
 
       <div className="flex gap-2 flex-wrap">
@@ -99,7 +100,7 @@ export default function UsersPage() {
                 </tr>
               ))}
               {filtered.length === 0 && (
-                <tr><td colSpan={9} className="py-10"><Empty icon="👥" title="No users found" /></td></tr>
+                <tr><td colSpan={9} className="py-10"><Empty icon={<Users size={18} />} title="No users found" /></td></tr>
               )}
             </tbody>
           </table>
