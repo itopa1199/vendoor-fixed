@@ -148,7 +148,7 @@ export function Avatar({ name, size = 28 }: { name: string; size?: number }) {
 }
 
 // ─── Empty State ──────────────────────────────────────────────────────────────
-export function Empty({ icon, title, sub }: { icon: string; title: string; sub?: string }) {
+export function Empty({ icon, title, sub }: { icon: React.ReactNode; title: string; sub?: string }) {
   return (
     <div className="text-center py-12 px-4">
       <div className="text-4xl mb-3">{icon}</div>
