@@ -1,26 +1,34 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
+import { adminAuth, isAdminLoggedIn, saveAdminToken } from '@/lib/admin-api'
 
-export default function LoginPage() {
+export default function AdminLoginPage() {
   const navigate = useNavigate()
-  const [email, setEmail]     = useState('admin@vendoor.ng')
-  const [password, setPassword] = useState('Admin@123!')
-  const [error, setError]     = useState('')
-  const [loading, setLoading] = useState(false)
+  const [email,    setEmail]    = useState('')
+  const [password, setPassword] = useState('')
+  const [error,    setError]    = useState('')
+  const [loading,  setLoading]  = useState(false)
+
+  // Already logged in → go straight to dashboard
+  useEffect(() => {
+    if (isAdminLoggedIn()) navigate('/admin', { replace: true })
+  }, [navigate])
 
   async function login(e: React.FormEvent) {
     e.preventDefault()
     setError('')
     setLoading(true)
-
-    // In production: call Supabase Auth
-    // const { error } = await supabase.auth.signInWithPassword({ email, password })
-    await new Promise(r => setTimeout(r, 600)) // simulate network
-
-    if (email === 'admin@vendoor.ng' && password === 'Admin@123!') {
-      navigate('/admin')
-    } else {
-      setError('Invalid credentials. Use admin@vendoor.ng / Admin@123!')
+    try {
+      const res = await adminAuth.login(email, password)
+      if (res.status && res.token) {
+        saveAdminToken(res.token, res.refresh_token ?? '')
+        navigate('/admin', { replace: true })
+      } else {
+        setError(res.message || 'Login failed. Check your credentials.')
+      }
+    } catch (err: any) {
+      setError(err?.response?.data?.message || 'Unable to reach server. Try again.')
+    } finally {
       setLoading(false)
     }
   }
@@ -29,7 +37,6 @@ export default function LoginPage() {
     <div className="min-h-screen flex items-center justify-center p-4"
       style={{ background: 'linear-gradient(150deg, #052A18 0%, #0A6E3F 100%)' }}>
       <div className="bg-white rounded-[16px] p-8 w-full max-w-[360px] shadow-[0_24px_80px_rgba(0,0,0,.3)]">
-        {/* Logo */}
         <div className="text-[22px] font-black text-[#0A6E3F] mb-1">
           Vend<span className="text-[#D97706]">oor</span>
         </div>
@@ -43,25 +50,15 @@ export default function LoginPage() {
         <form onSubmit={login} className="space-y-3">
           <div>
             <label className="block text-[10px] font-bold uppercase tracking-[.07em] text-[#6B6A62] mb-1">Email</label>
-            <input
-              type="email"
-              className="w-full px-3 py-2.5 border-[1.5px] border-[#E2E0DA] rounded-[8px] text-[13px] outline-none transition-colors focus:border-[#0A6E3F]"
+            <input type="email" required value={email} onChange={e => setEmail(e.target.value)}
               placeholder="admin@vendoor.ng"
-              value={email}
-              onChange={e => setEmail(e.target.value)}
-              required
-            />
+              className="w-full px-3 py-2.5 border-[1.5px] border-[#E2E0DA] rounded-[8px] text-[13px] outline-none focus:border-[#0A6E3F] transition-colors" />
           </div>
           <div>
             <label className="block text-[10px] font-bold uppercase tracking-[.07em] text-[#6B6A62] mb-1">Password</label>
-            <input
-              type="password"
-              className="w-full px-3 py-2.5 border-[1.5px] border-[#E2E0DA] rounded-[8px] text-[13px] outline-none transition-colors focus:border-[#0A6E3F]"
+            <input type="password" required value={password} onChange={e => setPassword(e.target.value)}
               placeholder="••••••••"
-              value={password}
-              onChange={e => setPassword(e.target.value)}
-              required
-            />
+              className="w-full px-3 py-2.5 border-[1.5px] border-[#E2E0DA] rounded-[8px] text-[13px] outline-none focus:border-[#0A6E3F] transition-colors" />
           </div>
 
           {error && (
@@ -70,18 +67,11 @@ export default function LoginPage() {
             </div>
           )}
 
-          <button
-            type="submit"
-            disabled={loading}
-            className="w-full py-3 bg-[#0A6E3F] text-white rounded-[8px] text-[14px] font-bold hover:bg-[#0D8A4F] transition-colors disabled:opacity-60 mt-2"
-          >
+          <button type="submit" disabled={loading}
+            className="w-full py-3 bg-[#0A6E3F] text-white rounded-[8px] text-[14px] font-bold hover:bg-[#0D8A4F] transition-colors disabled:opacity-60 mt-2">
             {loading ? 'Signing in…' : 'Sign In →'}
           </button>
         </form>
-
-        <p className="text-[11px] text-[#A8A79F] text-center mt-5">
-          Demo: admin@vendoor.ng / Admin@123!
-        </p>
       </div>
     </div>
   )
