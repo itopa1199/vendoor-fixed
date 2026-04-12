@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import { Card, StatCard, Btn, StatusBadge, Modal, DR, useToast, Empty } from '@/components/admin/ui'
 import { adminFinance } from '@/lib/admin-api'
-import { ngnKobo } from '@/lib/mock-data'
+import { ngnKobo } from '@/lib/utils'
 import { Landmark, Clock, RefreshCw } from 'lucide-react'
 
 export default function PayoutsPage() {

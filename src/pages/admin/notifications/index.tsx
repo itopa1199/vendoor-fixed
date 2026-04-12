@@ -1,7 +1,6 @@
 import React, { useState } from 'react'
 import { Card, Btn, Badge, useToast } from '@/components/admin/ui'
 import { Store, Package, CreditCard, Lock, Settings, DollarSign } from 'lucide-react'
-import { useAdminStore } from '@/store/admin'
 import { clsx } from 'clsx'
 
 const NOTIFICATIONS = [
@@ -25,7 +24,6 @@ const TYPE_BG: Record<string, string> = {
 
 export default function NotificationsPage() {
   const toast = useToast()
-  const { decrementNotif } = useAdminStore()
   const [notifs, setNotifs] = useState(NOTIFICATIONS.map(n => ({ ...n })))
   const [filter, setFilter] = useState('all')
 
@@ -33,13 +31,11 @@ export default function NotificationsPage() {
 
   function markRead(id: string) {
     setNotifs(ns => ns.map(n => n.id === id ? { ...n, read: true } : n))
-    decrementNotif()
   }
 
   function markAllRead() {
     const unreadCount = notifs.filter(n => !n.read).length
     setNotifs(ns => ns.map(n => ({ ...n, read: true })))
-    for (let i = 0; i < unreadCount; i++) decrementNotif()
     toast('✅ All notifications marked as read.')
   }
 

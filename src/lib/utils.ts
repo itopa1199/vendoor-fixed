@@ -52,3 +52,6 @@ export function dedupe<T>(arr: T[], key: keyof T): T[] {
     return true
   })
 }
+
+// Currency formatter
+export const ngnKobo = (n: number): string => '₦' + Math.round(n).toLocaleString('en-NG')

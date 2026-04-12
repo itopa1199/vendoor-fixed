@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import { Card, StatCard, Btn, StatusBadge, SearchBar, Select, Modal, DR, useToast, Empty } from '@/components/admin/ui'
 import { adminOrders } from '@/lib/admin-api'
-import { ngnKobo } from '@/lib/mock-data'
+import { ngnKobo } from '@/lib/utils'
 import { ShoppingCart, Truck, Package, CheckCircle, XCircle } from 'lucide-react'
 
 const STATUS_OPTIONS = [

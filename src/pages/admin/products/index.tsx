@@ -1,103 +1,106 @@
-import React, { useState } from 'react'
-import {
-  Card, Btn, StatusBadge, SearchBar, Select,
-  Modal, DR, Badge, Toggle, useToast, Empty,
-} from '@/components/admin/ui'
-import { useAdminStore } from '@/store/admin'
-import { ngnKobo } from '@/lib/mock-data'
+import React, { useEffect, useState } from 'react'
+import { Card, Btn, StatusBadge, SearchBar, Select, Modal, DR, Badge, useToast, Empty } from '@/components/admin/ui'
+import { adminModeration } from '@/lib/admin-api'
+import { adminDashboard } from '@/lib/admin-api'
+import { ngnKobo } from '@/lib/utils'
 import { Package } from 'lucide-react'
 
 export default function ProductsPage() {
-  const { products, flagProduct, unflagProduct, removeProduct, toggleFeatured } = useAdminStore()
   const toast = useToast()
-
-  const [q, setQ]            = useState('')
-  const [statusF, setStatusF] = useState('')
-  const [catF, setCatF]      = useState('')
-  const [viewId, setViewId]  = useState<string | null>(null)
+  const [products, setProducts] = useState<any[]>([])
+  const [loading,  setLoading]  = useState(true)
+  const [q, setQ]               = useState('')
+  const [viewId,   setViewId]   = useState<string | null>(null)
   const [removeId, setRemoveId] = useState<string | null>(null)
+  const [acting,   setActing]   = useState(false)
 
-  const filtered = products.filter(p => {
-    const txt = (p.title + p.vendor_name + p.category_name).toLowerCase()
-    const sMatch = !statusF || (statusF === 'active' ? p.is_active : !p.is_active)
-    const cMatch = !catF    || p.category_name === catF
-    return txt.includes(q.toLowerCase()) && sMatch && cMatch
+  const load = () => {
+    setLoading(true)
+    // Products come from stats or a dedicated endpoint — use get_stats_overview and extract
+    // Also try fetching via orders data or a general list
+    adminDashboard.getStats()
+      .then(r => {
+        console.log('[Products] stats response:', r)
+        // If API returns products in stats, use them
+        // Otherwise show empty state until a dedicated endpoint is available
+        const list = Array.isArray(r.data?.products) ? r.data.products :
+                     Array.isArray(r.products)        ? r.products : []
+        setProducts(list)
+      })
+      .catch(console.error)
+      .finally(() => setLoading(false))
+  }
+
+  useEffect(() => { load() }, [])
+
+  const norm = (p: any) => ({
+    uuid:     p.product_uuid ?? p.uuid ?? p.id ?? '',
+    name:     p.name ?? p.title ?? p.product_name ?? '—',
+    vendor:   p.vendor_name ?? p.store_name ?? '—',
+    category: p.category ?? p.category_name ?? '—',
+    price:    Number(p.price ?? p.amount ?? 0),
+    stock:    Number(p.stock ?? p.quantity ?? 0),
+    sales:    Number(p.sales_count ?? p.total_sales ?? p.sales ?? 0),
+    active:   p.is_active ?? p.active ?? (p.status === 'active'),
+    raw: p,
   })
 
-  const viewing  = viewId   ? products.find(p => p.id === viewId)   : null
-  const removing = removeId ? products.find(p => p.id === removeId) : null
-  const cats = [...new Set(products.map(p => p.category_name).filter(Boolean))]
-  const flaggedCount = products.filter(p => !p.is_active).length
+  const list = products.map(norm).filter(p =>
+    (p.name + p.vendor + p.category).toLowerCase().includes(q.toLowerCase())
+  )
+
+  const viewing  = viewId   ? list.find(p => p.uuid === viewId)   : null
+  const removing = removeId ? list.find(p => p.uuid === removeId) : null
+
+  async function doDelete(uuid: string) {
+    setActing(true)
+    try {
+      const r = await adminModeration.deleteProduct(uuid)
+      toast(r.status ? '🗑️ Product removed.' : `❌ ${r.message}`)
+      if (r.status) { setRemoveId(null); load() }
+    } catch { toast('❌ Failed to remove product') } finally { setActing(false) }
+  }
 
   return (
     <div className="space-y-4">
       <div className="flex items-start justify-between flex-wrap gap-2">
         <div>
           <h1 className="text-[18px] font-black">Products</h1>
-          <p className="text-[11px] text-[#6B6A62] mt-0.5">
-            {products.length} total · {flaggedCount > 0 && <span className="text-[#DC2626]">{flaggedCount} flagged</span>}
-          </p>
+          <p className="text-[11px] text-[#6B6A62] mt-0.5">{products.length} products loaded.</p>
         </div>
-        <Btn v="outline" size="sm">Export</Btn>
+        <Btn v="outline" size="sm" onClick={load}>Refresh</Btn>
       </div>
 
-      <div className="flex gap-2 flex-wrap">
-        <SearchBar placeholder="Search products…" value={q} onChange={setQ} />
-        <Select value={statusF} onChange={setStatusF} options={[
-          { label: 'All Status',  value: ''       },
-          { label: 'Active',      value: 'active' },
-          { label: 'Flagged',     value: 'flagged'},
-        ]} />
-        <Select value={catF} onChange={setCatF} options={[
-          { label: 'All Categories', value: '' },
-          ...cats.map(c => ({ label: c!, value: c! })),
-        ]} />
-      </div>
+      <SearchBar placeholder="Search products…" value={q} onChange={setQ} />
 
       <Card>
         <div className="overflow-x-auto">
           <table>
             <thead>
-              <tr>
-                <th>Product</th><th>Vendor</th><th>Category</th><th>Price</th>
-                <th>Stock</th><th>Sales</th><th>Featured</th><th>Status</th><th>Actions</th>
-              </tr>
+              <tr><th>Product</th><th>Vendor</th><th>Category</th><th>Price</th><th>Stock</th><th>Sales</th><th>Status</th><th>Actions</th></tr>
             </thead>
             <tbody>
-              {filtered.map(p => (
-                <tr key={p.id}>
-                  <td className="font-semibold max-w-[180px] truncate">{p.title}</td>
-                  <td className="text-[11px] text-[#6B6A62]">{p.vendor_name}</td>
-                  <td><Badge v="dim">{p.category_name}</Badge></td>
+              {loading ? (
+                <tr><td colSpan={8} className="text-center py-10 text-[#6B6A62]">Loading…</td></tr>
+              ) : list.length === 0 ? (
+                <tr><td colSpan={8} className="py-10"><Empty icon={<Package size={18} />} title="No products found" sub="Products will appear here once loaded from the API" /></td></tr>
+              ) : list.map(p => (
+                <tr key={p.uuid}>
+                  <td className="font-semibold max-w-[180px] truncate">{p.name}</td>
+                  <td className="text-[11px] text-[#6B6A62]">{p.vendor}</td>
+                  <td><Badge v="dim">{p.category}</Badge></td>
                   <td className="font-bold text-[#0A6E3F]">{ngnKobo(p.price)}</td>
-                  <td className={`text-center font-semibold ${p.stock < 10 ? 'text-[#DC2626]' : ''}`}>
-                    {p.stock}
-                  </td>
-                  <td className="text-center">{p.sales_count}</td>
-                  <td className="text-center">
-                    <Toggle on={p.is_featured} onChange={() => {
-                      toggleFeatured(p.id)
-                      toast(p.is_featured ? '✓ Feature removed' : '⭐ Product featured!')
-                    }} />
-                  </td>
-                  <td><StatusBadge status={p.is_active ? 'active' : 'flagged'} /></td>
+                  <td className={`text-center font-semibold ${p.stock < 10 ? 'text-[#DC2626]' : ''}`}>{p.stock}</td>
+                  <td className="text-center">{p.sales}</td>
+                  <td><StatusBadge status={p.active ? 'active' : 'flagged'} /></td>
                   <td>
                     <div className="flex gap-1.5 flex-wrap">
-                      <Btn v="outline" size="sm" onClick={() => setViewId(p.id)}>👁</Btn>
-                      {p.is_active
-                        ? <Btn v="red" size="sm" onClick={() => { flagProduct(p.id); toast('🚩 Product flagged.') }}>🚩 Flag</Btn>
-                        : <Btn v="green" size="sm" onClick={() => { unflagProduct(p.id); toast('✅ Product restored.') }}>✓ Restore</Btn>
-                      }
-                      <Btn v="red" size="sm" onClick={() => setRemoveId(p.id)}>🗑️</Btn>
+                      <Btn v="outline" size="sm" onClick={() => setViewId(p.uuid)}>View</Btn>
+                      <Btn v="red"     size="sm" onClick={() => setRemoveId(p.uuid)}>Delete</Btn>
                     </div>
                   </td>
                 </tr>
               ))}
-              {filtered.length === 0 && (
-                <tr><td colSpan={9} className="py-10">
-                  <Empty icon={<Package size={18} />} title="No products found" />
-                </td></tr>
-              )}
             </tbody>
           </table>
         </div>
@@ -107,41 +110,30 @@ export default function ProductsPage() {
       <Modal open={!!viewing} onClose={() => setViewId(null)} title="Product Details"
         footer={<Btn v="green" size="lg" onClick={() => setViewId(null)}>Close</Btn>}>
         {viewing && <>
-          <DR label="Name"        value={viewing.title} />
-          <DR label="Vendor"      value={viewing.vendor_name ?? '—'} />
-          <DR label="Category"    value={viewing.category_name ?? '—'} />
-          <DR label="Price"       value={<span className="text-[#0A6E3F]">{ngnKobo(viewing.price)}</span>} />
-          <DR label="Compare Price" value={viewing.compare_price ? ngnKobo(viewing.compare_price) : '—'} />
-          <DR label="Discount"    value={viewing.discount_percentage > 0 ? `${viewing.discount_percentage}%` : 'None'} />
-          <DR label="Stock"       value={`${viewing.stock} units`} />
-          <DR label="Sales"       value={`${viewing.sales_count} sold`} />
-          <DR label="Featured"    value={viewing.is_featured ? '⭐ Yes' : 'No'} />
-          <DR label="Status"      value={<StatusBadge status={viewing.is_active ? 'active' : 'flagged'} />} />
-          <DR label="SKU"         value={viewing.sku ?? '—'} />
-          <DR label="Tags"        value={viewing.tags.length ? viewing.tags.join(', ') : '—'} />
-          {viewing.description && (
-            <div className="mt-3 pt-3 border-t border-[#E2E0DA]">
-              <div className="text-[10px] font-bold uppercase tracking-wider text-[#6B6A62] mb-1">Description</div>
-              <p className="text-[12px] leading-relaxed">{viewing.description}</p>
-            </div>
+          <DR label="Name"     value={viewing.name} />
+          <DR label="Vendor"   value={viewing.vendor} />
+          <DR label="Category" value={viewing.category} />
+          <DR label="Price"    value={<span className="text-[#0A6E3F]">{ngnKobo(viewing.price)}</span>} />
+          <DR label="Stock"    value={`${viewing.stock} units`} />
+          <DR label="Sales"    value={`${viewing.sales} sold`} />
+          <DR label="Status"   value={<StatusBadge status={viewing.active ? 'active' : 'flagged'} />} />
+          {import.meta.env.DEV && (
+            <details className="mt-3"><summary className="text-[10px] text-[#A8A79F] cursor-pointer">Raw fields (dev)</summary>
+              <pre className="text-[9px] bg-[#F5F4F0] p-2 rounded mt-1 overflow-auto max-h-[200px]">{JSON.stringify(viewing.raw, null, 2)}</pre>
+            </details>
           )}
         </>}
       </Modal>
 
-      {/* Remove Modal */}
-      <Modal open={!!removing} onClose={() => setRemoveId(null)} title="Remove Product"
+      {/* Delete Modal */}
+      <Modal open={!!removing} onClose={() => setRemoveId(null)} title="Delete Product"
         footer={<>
           <Btn v="outline" size="lg" onClick={() => setRemoveId(null)}>Cancel</Btn>
-          <Btn v="red" size="lg" onClick={() => {
-            removeProduct(removing!.id); setRemoveId(null); toast('🗑️ Product removed.')
-          }}>🗑️ Remove Permanently</Btn>
+          <Btn v="red" size="lg" onClick={() => doDelete(removing!.uuid)} disabled={acting}>
+            {acting ? 'Deleting…' : 'Delete Permanently'}
+          </Btn>
         </>}>
-        {removing && (
-          <p className="text-[13px]">
-            Are you sure you want to permanently remove <strong>{removing.title}</strong>?
-            This action cannot be undone.
-          </p>
-        )}
+        {removing && <p className="text-[13px]">Permanently delete <strong>{removing.name}</strong>? This cannot be undone.</p>}
       </Modal>
     </div>
   )

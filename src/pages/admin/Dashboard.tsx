@@ -10,7 +10,7 @@ import {
 } from 'lucide-react'
 import { StatCard, Card, CardHeader, CardTitle, Btn, StatusBadge, Avatar, ProgBar } from '@/components/admin/ui'
 import { adminDashboard, adminVendors } from '@/lib/admin-api'
-import { ngnKobo } from '@/lib/mock-data'
+import { ngnKobo } from '@/lib/utils'
 
 const CATEGORY_CHART = {
   labels: ['Phones','Laptops','Fashion','Beauty','Groceries','Sports','Decor','Fragrances'],
