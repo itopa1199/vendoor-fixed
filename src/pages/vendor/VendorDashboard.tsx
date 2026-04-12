@@ -157,7 +157,6 @@ function OverviewTab() {
   useEffect(() => {
     Promise.all([vendorApi.dashboard(), vendorApi.earnings(), vendorApi.incomingOrders()])
       .then(([d, e, o]) => {
-        console.log('incoming orders', o.data)
         setStats({ orders: d.data.orders ?? 0, revenue: d.data.revenue ?? 0, products: d.data.products ?? 0, earnings: e.data.earnings ?? 0 })
         setOrders((o.data.orders ?? []).slice(0, 6))
       }).catch(() => { }).finally(() => setLoading(false))
@@ -283,7 +282,6 @@ function ProductsTab() {
   const handleSave = async () => {
     if (!form.name.trim() || !form.price) { toast.error('Name and price required'); return }
     setSaving(true)
-    console.log('form.categories', form.categories)
     try {
       const isEdit = !!(modal && (modal as VendorProduct).product_uuid)
       if (isEdit) {
@@ -365,7 +363,7 @@ function ProductsTab() {
 
    {/* Modal / Bottom Sheet */}
 {modal !== false && (
-  <div className="fixed inset-0 z-[400] flex items-end justify-center transition-opacity duration-300" style={{position:'absolute',bottom:0}}>
+  <div className=" inset-0 z-[400] flex items-end justify-center transition-opacity duration-300" style={{bottom:90}}>
     
     {/* Backdrop: High-end blur + dim */}
     <div 
@@ -1091,7 +1089,7 @@ function SpotlightTab() {
 
   const [saving, setSaving] = useState(false);
   const [tab, setTab] = useState<'profile' | 'store' | 'verify'>('profile');
-  const PK = import.meta.env.VITE_PAYSTACK_KEY || "";
+  const PK = "pk_live_51a5bad8becf97ce624cdae76deced680a8b6695";
   const handlePhotoUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) return;

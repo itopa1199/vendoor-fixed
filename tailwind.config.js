@@ -4,7 +4,6 @@ module.exports = {
   theme: {
     extend: {
       colors: {
-        // Buyer theme (orange)
         brand: {
           DEFAULT: '#F85606',
           hover: '#FF6B2B',
@@ -12,7 +11,6 @@ module.exports = {
         },
         yellow: { DEFAULT: '#FFC200', light: '#FFFBEE' },
         green: { DEFAULT: '#00853D', light: '#E8F7EF' },
-        // Vendor theme (dark)
         dark: {
           bg: '#0F0E0D',
           surface: '#1A1917',
@@ -22,12 +20,12 @@ module.exports = {
         amber: { DEFAULT: '#F5A623', dim: '#7A4F0C' },
         terra: '#E8623A',
       },
+
       fontFamily: {
-        display: ['var(--font-display)', 'system-ui', 'sans-serif'],
-        body: ['var(--font-body)', 'system-ui', 'sans-serif'],
-        syne: ['var(--font-syne)', 'sans-serif'],
-        manrope: ['var(--font-manrope)', 'sans-serif'],
+        sans: ['Lato', 'sans-serif'], // default font
+        lato: ['Lato', 'sans-serif'], // optional custom name
       },
+
       keyframes: {
         fadeInUp: {
           from: { opacity: '0', transform: 'translateY(10px)' },
@@ -47,6 +45,7 @@ module.exports = {
           to: { transform: 'scale(1)', opacity: '1' },
         },
       },
+
       animation: {
         fadeInUp: 'fadeInUp 0.22s ease both',
         slideUp: 'slideUp 0.26s ease both',

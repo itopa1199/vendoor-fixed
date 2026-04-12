@@ -28,7 +28,7 @@ export default function CartDrawer() {
   const [vendoorItems, setVendoorItems] = useState<any[]>([])
   const [billingAddress, setBillingAddress] = useState('')
 
-  const PK = import.meta.env.VITE_PAYSTACK_KEY || ''
+  const PK =  'pk_live_51a5bad8becf97ce624cdae76deced680a8b6695'
 
   const refreshData = useCallback(async (showLoader = false) => {
     if (!isAuthenticated()) return
@@ -109,7 +109,7 @@ export default function CartDrawer() {
   return (
     <>
       <div className={`fixed inset-0 bg-black/60 backdrop-blur-sm z-[500] transition-opacity duration-300 ${cartOpen ? 'opacity-100' : 'opacity-0 pointer-events-none'}`} onClick={closeCart} />
-      <div className={`fixed right-0 top-0 bottom-0 w-full md:w-[450px] bg-[#F4F7F9] z-[501] flex flex-col shadow-2xl transition-transform duration-500 ease-[cubic-bezier(0.32,0,0.07,1)] ${cartOpen ? 'translate-x-0' : 'translate-x-full'}`}>
+      <div className={`fixed right-0 top-0 bottom-0 w-full md:w-[450px] bg-[#F4F7F9] z-[501] flex flex-col transition-transform duration-500 ease-[cubic-bezier(0.32,0,0.07,1)] ${cartOpen ? 'translate-x-0' : 'translate-x-full'}`}>
 
         {isProcessing && (
           <div className="absolute inset-0 bg-white/80 backdrop-blur-md z-[700] flex flex-col items-center justify-center">
@@ -120,7 +120,7 @@ export default function CartDrawer() {
 
         <div className="bg-white p-5 border-b flex items-center justify-between shrink-0">
           <h2 className="text-[20px] font-[900] text-[#1A1A1A] flex items-center gap-2">
-            <MdShoppingCart className="text-[#F85606]" /> Shopping Basket
+            <MdShoppingCart className="text-[#F85606]" /> Shopping Cart
           </h2>
           <button onClick={closeCart} className="p-2 hover:bg-gray-100 rounded-full transition-all"><MdClose size={28} /></button>
         </div>
@@ -128,7 +128,7 @@ export default function CartDrawer() {
         <div className="flex bg-white p-2 border-b gap-1 shrink-0">
           {(['local', 'vendoor', 'checkout'] as const).map((t) => (
             <button key={t} onClick={() => setActiveTab(t)}
-              className={`flex-1 py-3 rounded-xl text-[11px] font-[900] uppercase tracking-tighter transition-all ${activeTab === t ? 'bg-[#F85606] text-white shadow-lg' : 'text-gray-400 hover:bg-gray-50'}`}>
+              className={`flex-1 py-3 rounded-xl text-[11px] font-[900] uppercase tracking-tighter transition-all ${activeTab === t ? 'bg-[#F85606] text-white' : 'text-gray-400 hover:bg-gray-50'}`}>
               {t}
             </button>
           ))}
@@ -154,8 +154,8 @@ export default function CartDrawer() {
                         <ItemRow key={item.product_uuid} item={item} onUpdate={updateQuantity} onRemove={removeFromCart} />
                       ))}
                       <button onClick={handleSyncToVendoor}
-                        className="w-full h-14 bg-[#F85606] text-white rounded-2xl font-black text-[14px] shadow-lg shadow-orange-100 flex items-center justify-center gap-2 mt-6">
-                        <MdCloudUpload size={20} /> SYNC ALL TO VENDOOR
+                        className="w-full h-14 bg-[#F85606] text-white rounded-2xl font-black text-[14px]  flex items-center justify-center gap-2 mt-6">
+                        CONTINUE
                       </button>
                     </>
                   ) : <EmptyState title="Local Cart Empty" />}
@@ -182,7 +182,7 @@ export default function CartDrawer() {
 
               {activeTab === 'checkout' && (
                 <div className="space-y-6">
-                  <div className="bg-white p-5 rounded-2xl border shadow-sm">
+                  <div className="bg-white p-5 rounded-2xl border">
                     <h3 className="text-[14px] font-black mb-4 flex items-center gap-2"><MdLocationOn className="text-[#F85606]" /> DELIVERY ADDRESS</h3>
                     <div className="space-y-3">
                       <textarea
@@ -193,7 +193,7 @@ export default function CartDrawer() {
                     </div>
                   </div>
 
-                  <div className="bg-white p-5 rounded-2xl border shadow-sm">
+                  <div className="bg-white p-5 rounded-2xl border">
                     <h3 className="text-[14px] font-black mb-4">TOTAL PAYABLE</h3>
                     <div className="flex justify-between items-center mb-6">
                       <span className="text-[32px] font-black text-[#F85606]">{ngn(vendoorTotal)}</span>
@@ -201,7 +201,7 @@ export default function CartDrawer() {
                     </div>
                     {billingAddress && vendoorItems.length > 0 ? (
                       <PaystackButton {...paystackConfig}
-                        className="w-full h-14 bg-[#00853D] text-white rounded-2xl font-black text-[16px] shadow-xl shadow-green-100 hover:scale-[1.02] transition-transform" />
+                        className="w-full h-14 bg-[#00853D] text-white rounded-2xl font-black text-[16px] hover:scale-[1.02] transition-transform" />
                     ) : (
                       <div className="bg-red-50 p-4 rounded-xl flex items-center gap-3 text-red-600">
                         <MdErrorOutline size={20} />

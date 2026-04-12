@@ -33,7 +33,7 @@ export default function DashboardPage() {
       if (s.status)  setStats(s.data)
       if (c.status)  setChart(c.data ?? [])
       if (p.status)  setPending(p.data ?? [])
-    }).catch(console.error)
+    }).catch(err => {})
       .finally(() => setLoading(false))
   }, [])
 

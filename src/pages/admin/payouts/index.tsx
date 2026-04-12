@@ -15,7 +15,7 @@ export default function PayoutsPage() {
     setLoading(true)
     adminFinance.listWithdrawals()
       .then(r => { if (r.status) setPayouts(r.data ?? []) })
-      .catch(console.error)
+        .catch(()=>{})
       .finally(() => setLoading(false))
   }
 

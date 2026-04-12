@@ -28,7 +28,7 @@ export default function OrdersPage() {
     setLoading(true)
     adminOrders.list({ status: statusF, search: q })
       .then(r => { if (r.status) setOrders(r.data ?? []) })
-      .catch(console.error)
+      .catch(()=>{})
       .finally(() => setLoading(false))
   }
 

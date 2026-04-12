@@ -16,7 +16,7 @@ export default function PendingPage() {
     setLoading(true)
     adminVendors.listPending()
       .then(r => { if (r.status) setVendors(r.data ?? []) })
-      .catch(console.error)
+        .catch(()=>{})
       .finally(() => setLoading(false))
   }
 

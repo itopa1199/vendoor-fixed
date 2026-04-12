@@ -16,7 +16,7 @@ export default function UsersPage() {
     setLoading(true)
     adminUsers.list(p, 20, search)
       .then(r => { if (r.status) setUsers(r.data ?? []) })
-      .catch(console.error)
+        .catch(()=>{})
       .finally(() => setLoading(false))
   }
 

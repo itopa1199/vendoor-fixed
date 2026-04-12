@@ -9,7 +9,7 @@ import Stars from '@/components/ui/Stars'
 export default function VendorProfilePage() {
   const { uuid } = useParams<{ uuid: string }>()
   const navigate = useNavigate()
-  const [vendor, setVendor] = useState<Vendor | null>(null)
+  const [vendor, setVendor] = useState<any | null>(null)
   const [products, setProducts] = useState<Product[]>([])
   const [loading, setLoading] = useState(true)
 
@@ -55,8 +55,8 @@ export default function VendorProfilePage() {
             <p className="text-[13px] text-[#757575] mt-1">{vendor.email}</p>
             <div className="flex gap-5 mt-4 p-4 bg-[#F5F5F5] rounded-[10px] border border-[#E8E8E8]">
               <div className="text-center flex-1"><p className="text-[18px] font-[700] text-[#F85606]" style={{ fontFamily: 'var(--font-syne, system-ui)' }}>{products.length}</p><p className="text-[11px] text-[#757575]">Products</p></div>
-              <div className="text-center flex-1 justify-center"><Stars rating={4.8} size={13}  /><p className="text-[11px] text-[#757575] mt-1">Rating</p></div>
-              <div className="text-center flex-1"><p className="text-[18px] font-[700] text-[#00853D]" style={{ fontFamily: 'var(--font-syne, system-ui)' }}>4.2k</p><p className="text-[11px] text-[#757575]">Sales</p></div>
+              <div className="text-center flex-1 justify-center"><Stars rating={vendor?.total_reviews ?? 0} size={13}  /><p className="text-[11px] text-[#757575] mt-1">Rating</p></div>
+              <div className="text-center flex-1"><p className="text-[18px] font-[700] text-[#00853D]" style={{ fontFamily: 'var(--font-syne, system-ui)' }}>{vendor?.total_sales ?? 0}</p><p className="text-[11px] text-[#757575]">Sales</p></div>
             </div>
           </div>
         </div>

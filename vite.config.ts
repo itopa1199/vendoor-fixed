@@ -1,6 +1,11 @@
 import { defineConfig } from 'vite'
 import react from '@vitejs/plugin-react'
 import path from 'path'
+import { fileURLToPath } from 'url'
+
+// Fix for __dirname in ES modules
+const __filename = fileURLToPath(import.meta.url)
+const __dirname = path.dirname(__filename)
 
 export default defineConfig({
   plugins: [react()],
@@ -11,14 +16,12 @@ export default defineConfig({
   },
   build: {
     chunkSizeWarningLimit: 600,
+    sourcemap: false,
     rollupOptions: {
       output: {
         manualChunks: {
-          // React core — loaded on every page
           'vendor-react': ['react', 'react-dom', 'react-router-dom'],
-          // Charts — only loaded in admin/analytics pages
           'vendor-charts': ['recharts'],
-          // State + utils
           'vendor-libs': ['zustand', 'axios', 'clsx', 'tailwind-merge'],
         },
       },

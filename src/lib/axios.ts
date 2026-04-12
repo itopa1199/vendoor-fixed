@@ -1,7 +1,7 @@
 import axios from 'axios'
 import Cookies from 'js-cookie'
 
-export const BASE_URL = '/vd-api'
+export const BASE_URL = 'https://vendoor.ng/store/api'
 
 export const getToken = () => Cookies.get('vd_jwt') ?? null
 export const getRefreshToken = () => Cookies.get('vd_refresh') ?? null
@@ -33,13 +33,11 @@ async function refreshToken(): Promise<string | null> {
   })
   .then(res => {
     const { jwt_token, jwt_expiry } = res.data.data
-    console.log('Token refreshed:', jwt_token)
     Cookies.set('vd_jwt', jwt_token, { expires: 7, sameSite: 'lax' })
     Cookies.set('vd_expiry', String(jwt_expiry), { expires: 7, sameSite: 'lax' })
     return jwt_token
   })
   .catch(err => {
-    console.log('Refresh token failed', err)
     clearTokens()
     return null
   })

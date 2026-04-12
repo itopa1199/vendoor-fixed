@@ -19,7 +19,7 @@
 
 *, *::before, *::after { box-sizing: border-box; }
 html { font-family: system-ui, -apple-system, sans-serif; color: var(--tx); background: var(--bg); overflow-x: hidden; }
-body { min-height: 100vh; overflow-x: hidden; }
+body { min-height: 100vh; overflow-x: hidden; font-family: 'Lato', sans-serif;}
 button { cursor: pointer; border: none; background: none; font-family: inherit; }
 input, select, textarea { font-family: inherit; }
 img { display: block; max-width: 100%; object-fit: cover; }
