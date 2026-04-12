@@ -30,10 +30,20 @@ export default function DashboardPage() {
       adminDashboard.getSalesChart(),
       adminVendors.listPending(),
     ]).then(([s, c, p]) => {
-      if (s.status)  setStats(s.data)
-      if (c.status)  setChart(c.data ?? [])
-      if (p.status)  setPending(p.data ?? [])
-    }).catch(err => {})
+      console.log('[Dashboard] stats:', s)
+      console.log('[Dashboard] chart:', c)
+      console.log('[Dashboard] pending:', p)
+      if (s.status)  setStats(s.data ?? s)
+      // chart data may be at c.data or directly c
+      const chartArr = Array.isArray(c.data) ? c.data : Array.isArray(c) ? c : []
+      setChart(chartArr)
+      // pending list
+      const pendingArr =
+        Array.isArray(p.data)          ? p.data :
+        Array.isArray(p.vendors)       ? p.vendors :
+        Array.isArray(p.data?.vendors) ? p.data.vendors : []
+      setPending(pendingArr)
+    }).catch(console.error)
       .finally(() => setLoading(false))
   }, [])
 
@@ -54,13 +64,13 @@ export default function DashboardPage() {
       {/* Stat Cards */}
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-3">
         <StatCard icon={<DollarSign size={18} className="text-[#0A6E3F]" />}
-          value={stats ? ngnKobo(stats.total_sales ?? 0) : '—'} label="Total Sales" accent="green" />
+          value={stats ? ngnKobo(stats.total_sales ?? stats.sales ?? 0) : '—'} label="Total Sales" accent="green" />
         <StatCard icon={<ShoppingCart size={18} className="text-[#2563EB]" />}
-          value={stats ? String(stats.total_orders ?? 0) : '—'} label="Total Orders" accent="blue" />
+          value={stats ? String(stats.total_orders ?? stats.orders ?? 0) : '—'} label="Total Orders" accent="blue" />
         <StatCard icon={<Users size={18} className="text-[#D97706]" />}
-          value={stats ? String(stats.total_users ?? 0) : '—'} label="Registered Users" accent="gold" />
+          value={stats ? String(stats.total_users ?? stats.users ?? 0) : '—'} label="Registered Users" accent="gold" />
         <StatCard icon={<Store size={18} className="text-[#DC2626]" />}
-          value={stats ? String(stats.total_vendors ?? 0) : '—'} label="Active Vendors" accent="red" />
+          value={stats ? String(stats.total_vendors ?? stats.vendors ?? 0) : '—'} label="Active Vendors" accent="red" />
       </div>
 
       {/* Revenue Chart */}

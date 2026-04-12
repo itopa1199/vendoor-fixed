@@ -15,8 +15,16 @@ export default function UsersPage() {
   const load = (p = page, search = q) => {
     setLoading(true)
     adminUsers.list(p, 20, search)
-      .then(r => { if (r.status) setUsers(r.data ?? []) })
-        .catch(()=>{})
+      .then(r => {
+        console.log('[Users] raw response:', r)
+        const list =
+          Array.isArray(r.data)        ? r.data :
+          Array.isArray(r.users)       ? r.users :
+          Array.isArray(r.data?.users) ? r.data.users :
+          Array.isArray(r)             ? r : []
+        setUsers(list)
+      })
+      .catch(console.error)
       .finally(() => setLoading(false))
   }
 
@@ -66,20 +74,20 @@ export default function UsersPage() {
                 <tr key={u.uuid}>
                   <td>
                     <div className="flex items-center gap-2">
-                      <Avatar name={u.name ?? '?'} />
-                      <span className="font-semibold">{u.name}</span>
+                      <Avatar name={u.name ?? u.full_name ?? '?'} />
+                      <span className="font-semibold">{u.name ?? u.full_name ?? '—'}</span>
                     </div>
                   </td>
-                  <td className="text-[11px] text-[#6B6A62]">{u.email}</td>
-                  <td className="text-[11px]">{u.phone}</td>
-                  <td className="text-[11px] capitalize">{u.account_type ?? u.role}</td>
-                  <td><StatusBadge status={u.is_blocked ? 'suspended' : 'active'} /></td>
-                  <td className="text-[11px] text-[#6B6A62]">{u.created_at?.slice(0, 10)}</td>
+                  <td className="text-[11px] text-[#6B6A62]">{u.email ?? '—'}</td>
+                  <td className="text-[11px]">{u.phone ?? u.phone_number ?? '—'}</td>
+                  <td className="text-[11px] capitalize">{u.account_type ?? u.role ?? u.type ?? '—'}</td>
+                  <td><StatusBadge status={(u.is_blocked || u.blocked || u.status === 'blocked') ? 'suspended' : 'active'} /></td>
+                  <td className="text-[11px] text-[#6B6A62]">{(u.created_at ?? u.date_joined ?? '').slice(0, 10)}</td>
                   <td>
                     <div className="flex gap-1.5">
                       <Btn v="outline" size="sm" onClick={() => setViewId(u.uuid)}>👁</Btn>
                       {!u.is_blocked && (
-                        <Btn v="orange" size="sm" onClick={() => block(u.uuid)} disabled={acting}>Block</Btn>
+                        <Btn v="orange" size="sm" onClick={() => block(u.uuid ?? u.user_uuid ?? u.id)} disabled={acting}>Block</Btn>
                       )}
                     </div>
                   </td>

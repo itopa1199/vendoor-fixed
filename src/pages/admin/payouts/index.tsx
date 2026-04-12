@@ -14,8 +14,17 @@ export default function PayoutsPage() {
   const load = () => {
     setLoading(true)
     adminFinance.listWithdrawals()
-      .then(r => { if (r.status) setPayouts(r.data ?? []) })
-        .catch(()=>{})
+      .then(r => {
+        console.log('[Payouts] raw response:', r)
+        const list =
+          Array.isArray(r.data)             ? r.data :
+          Array.isArray(r.withdrawals)      ? r.withdrawals :
+          Array.isArray(r.payouts)          ? r.payouts :
+          Array.isArray(r.data?.withdrawals)? r.data.withdrawals :
+          Array.isArray(r)                  ? r : []
+        setPayouts(list)
+      })
+      .catch(console.error)
       .finally(() => setLoading(false))
   }
 
@@ -64,12 +73,12 @@ export default function PayoutsPage() {
                 <tr><td colSpan={7} className="py-10"><Empty icon={<Landmark size={18} />} title="No withdrawal requests" /></td></tr>
               ) : payouts.map((p: any) => (
                 <tr key={p.id}>
-                  <td className="font-bold">{p.vendor_name ?? p.store_name}</td>
-                  <td className="font-bold text-[#0A6E3F]">{ngnKobo(Number(p.amount ?? 0))}</td>
-                  <td className="text-[11px] text-[#6B6A62]">{p.bank_name ?? p.bank_code}</td>
-                  <td className="text-[11px]">{p.account_number ?? p.bank_account}</td>
-                  <td className="text-[11px] text-[#6B6A62]">{p.created_at?.slice(0,10)}</td>
-                  <td><StatusBadge status={p.status} /></td>
+                  <td className="font-bold">{p.vendor_name ?? p.store_name ?? p.name ?? '—'}</td>
+                  <td className="font-bold text-[#0A6E3F]">{ngnKobo(Number(p.amount ?? p.withdrawal_amount ?? 0))}</td>
+                  <td className="text-[11px] text-[#6B6A62]">{p.bank_name ?? p.bank ?? p.bank_code ?? '—'}</td>
+                  <td className="text-[11px]">{p.account_number ?? p.bank_account ?? p.account ?? '—'}</td>
+                  <td className="text-[11px] text-[#6B6A62]">{(p.created_at ?? p.date ?? '').slice(0,10)}</td>
+                  <td><StatusBadge status={p.status ?? 'pending'} /></td>
                   <td>
                     {p.status === 'pending'
                       ? <Btn v="green" size="sm" onClick={() => setProcessId(p.id)}>Approve</Btn>

@@ -27,8 +27,16 @@ export default function OrdersPage() {
   const load = () => {
     setLoading(true)
     adminOrders.list({ status: statusF, search: q })
-      .then(r => { if (r.status) setOrders(r.data ?? []) })
-      .catch(()=>{})
+      .then(r => {
+        console.log('[Orders] raw response:', r)
+        const list =
+          Array.isArray(r.data)          ? r.data :
+          Array.isArray(r.orders)        ? r.orders :
+          Array.isArray(r.data?.orders)  ? r.data.orders :
+          Array.isArray(r)               ? r : []
+        setOrders(list)
+      })
+      .catch(console.error)
       .finally(() => setLoading(false))
   }
 
@@ -93,11 +101,11 @@ export default function OrdersPage() {
                 const uuid = o.order_uuid ?? o.uuid
                 return (
                   <tr key={uuid}>
-                    <td className="font-mono font-bold text-[11px] text-[#2563EB]">{o.reference ?? uuid?.slice(0,10)}</td>
-                    <td>{o.customer_name ?? o.user_name ?? 'Guest'}</td>
-                    <td className="font-bold text-[#0A6E3F]">{ngnKobo(o.total ?? 0)}</td>
-                    <td className="text-[11px] text-[#6B6A62]">{o.created_at?.slice(0,10)}</td>
-                    <td><StatusBadge status={o.status} /></td>
+                    <td className="font-mono font-bold text-[11px] text-[#2563EB]">{o.reference ?? o.order_reference ?? uuid?.slice(0,10)}</td>
+                    <td>{o.customer_name ?? o.user_name ?? o.buyer_name ?? 'Guest'}</td>
+                    <td className="font-bold text-[#0A6E3F]">{ngnKobo(Number(o.total ?? o.amount ?? o.total_amount ?? 0))}</td>
+                    <td className="text-[11px] text-[#6B6A62]">{(o.created_at ?? o.date ?? '').slice(0,10)}</td>
+                    <td><StatusBadge status={o.status ?? o.order_status ?? 'pending'} /></td>
                     <td>
                       <div className="flex gap-1.5 flex-wrap">
                         <Btn v="outline" size="sm" onClick={() => setViewId(uuid)}>👁 View</Btn>
