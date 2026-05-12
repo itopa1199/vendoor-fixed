@@ -81,3 +81,6 @@ VITE_PAYSTACK_KEY=your_paystack_public_key
 ## Status
 
 Active development. Live at [vendoor.ng](https://vendoor.ng).
+
+
+##The main frontend repo is private — it's a collaborative project with a backend developer. The live product is at vendoor.ng.
